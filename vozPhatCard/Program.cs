@@ -23,12 +23,13 @@ namespace vozPhatCard
     {
         static ITelegramBotClient vozPhatCardBot;
 
+        // Store cards information.
         static List<CardInfo> cardInfo = new List<CardInfo>();
 
+        // Buttons list. Each button represents a card.
         static List<List<InlineKeyboardButton>> buttons = new List<List<InlineKeyboardButton>>();
 
-        //static List<long> clickerID = new List<long>();
-
+        // Store clickers' ID and their card index. <clickerID, cardIndex>
         static Dictionary<long, int> clickers = new Dictionary<long, int>();
         
         static void Main(string[] args)
@@ -36,12 +37,7 @@ namespace vozPhatCard
             vozPhatCardBot = new TelegramBotClient("BOT_API_HERE");
             vozPhatCardBot.OnMessage += Bot_OnMessage;
             vozPhatCardBot.OnCallbackQuery += Bot_OnCallbackQuery;
-
             vozPhatCardBot.StartReceiving();
-
-
-            Console.WriteLine("Hello World!");
-
             Thread.Sleep(int.MaxValue);
             vozPhatCardBot.StopReceiving();
         }
@@ -53,16 +49,16 @@ namespace vozPhatCard
 
             try
             {
-                var result = message.Text.Split(new[] { '\r', '\n' });
+                var messageLines = message.Text.Split(new[] { '\r', '\n' });
 
-                if (result[0].Trim() == "#phatcard")
+                if (messageLines[0].Trim() == "#phatcard")
                 {
                     // Add cards to list.
                     cardInfo.Clear();
-                    for (int i = 1; i < result.Length; i++)
+                    for (int i = 1; i < messageLines.Length; i++)
                     {
-                        string provider = result[i].Split('-', 2)[0].Trim().ToUpper();
-                        string pin = result[i].Split('-', 2)[1].Trim();
+                        string provider = messageLines[i].Split('-', 2)[0].Trim().ToUpper();
+                        string pin = messageLines[i].Split('-', 2)[1].Trim();
                         cardInfo.Add(new CardInfo(provider, pin));
                     }
 
